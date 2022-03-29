@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: gymin97/msa2:nginx_v1
+        volumeMounts:
+          - name: conf
+            mountPath: /etc/nginx/conf.d
+        ports:
+          - containerPort: 80
+      volumes:
+        - name: conf
+          configMap:
+            name: was-conf
