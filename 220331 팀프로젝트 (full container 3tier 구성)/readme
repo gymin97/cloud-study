@@ -1,0 +1,31 @@
+과제 - full container 3tier 구성하기
+
+- nfs 서버: Bastion host를 통해 접속한다. export 디렉토리 명은 /nginx이다
+	cluster와 같은 VPC에 존재한다
+
+1. web tier 
+	Service name: web-svc
+	Deployment name: nginx-deploy 
+	Replicas=3개 
+	Image : nginx
+	/var/log/nginx -> nfs서버의 /nginx에 마운트 (pv, pvc 이용) 
+	nginx conf -> configmap을 사용할 것 
+ 	 - Configmap name : nginx-conf 
+2. was tier
+	service name: was-svc
+	Deployment name: was-deploy 
+	Replicas= 2개 
+	Image:  statefulSet으로 생성한 db pod와 svc이름으로 접근가능하도록 docker file을 새로 만들어 build하여 사용할 것
+3. DB tire 
+	Container로 작성
+	Image: mysql:5.7
+	db는 한글이 지원되도록 하고 해당 cnf 파일은 config map으로 처리 
+	환경변수는 모두 secret으로 처리
+	MYSQL_ROOT_HOST value는 '%'로 처리 
+	DB tire는 statepulset 혹은 replicaset으로 작성
+	단 /var/lib/mysql 경로는 외부 volume에 마운트 할 수 있도록 한다. 
+	마운트 volume은 NFS나 블록 스토리지 어떤 것을 사용해도 무관 하다. 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# secret yml 만들기
+kubectl create secret generic db-pass --from-file ./secret -o yaml --dry-run=client > db-env.yaml

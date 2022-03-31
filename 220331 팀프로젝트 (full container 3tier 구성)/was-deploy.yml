@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: was-deploy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: java-was
+  template:
+    metadata:
+      labels:
+        app: java-was
+    spec:
+      containers:
+      - name: was
+        image: gymin97/was:db-0.mydb
