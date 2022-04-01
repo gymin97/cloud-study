@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+spec:
+  containers:
+  - name: mysql
+    image: hifrodo/msa-devops:mysql_1
+    env:
+      - name: MYSQL_ROOT_PASSWORD
+        value: frodo5020!!
+      - name: MYSQL_DATABASE
+        value: boot_board
+      - name: MYSQL_USER
+        value: frodo
+      - name: MYSQL_PASSWORD
+        value: frodo5020!!
+      - name: MYSQL_ROOT_HOST
+        value: '%'
+    ports:
+      - containerPort: 3306
