@@ -1,2 +1,6 @@
-# k8s_3tier
-쿠버네티스로 3tier를 다양하게 구현하고 사용한 yaml파일을 업로드하는 공간입니다
+# cloud-study
+클라우드 공부 저장소입니다
+3tier 구성에 필요한 yml 파일과 메뉴얼을 업로드합니다
+
+- **Kubernetes** : k8s로 3tier를 구성합니다 (gke, eks)
+- **Cloud platform** : AWS, GCP를 이용하여 3tier를 구성합니다
