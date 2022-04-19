@@ -1,0 +1,53 @@
+eksctl utils associate-iam-oidc-provider --region us-west-1 --cluster gymin --approve
+
+curl -o iam_policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.4.0/docs/install/iam_policy.json
+
+aws iam create-policy --policy-name AWSLoadBalancerControllerIAMPolicy --policy-document file://iam_policy.json
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+==On Linux==
+eksctl create iamserviceaccount \
+  --cluster=frodo \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --attach-policy-arn=arn:aws:iam::940168446867:policy/AWSLoadBalancerControllerIAMPolicy \
+  --override-existing-serviceaccounts \
+  --approve
+
+
+==On Windows==
+eksctl create iamserviceaccount --cluster=gymin --namespace=kube-system --name=aws-load-balancer-controller --attach-policy-arn=arn:aws:iam::940168446867:policy/AWSLoadBalancerControllerIAMPolicy --override-existing-serviceaccounts --approve
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+==ingress Controller를 설치하기 전에 Cert-manager 설치==
+
+kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.5.4/cert-manager.yaml
+  
+curl -o v2_4_0_full.yaml https://github.com/kubernetes-sigs/aws-load-balancer-controller/releases/download/v2.4.0/v2_4_0_full.yaml
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+==리눅스== 
+sed -i.bak -e 's|your-cluster-name|gymin|' ./v2_4_0_full.yaml
+
+== windows는 검색 , 변경==
+your-cluster-name -> gymin
+
+=== windows v2_4_0_full.yaml에서 다음 부분 제거 ==
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: aws-load-balancer-controller
+  name: aws-load-balancer-controller
+  namespace: kube-system
+---
++ v2_4_0_full.yaml apply하기
+--> kubectl apply -f .
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+==컨트롤러 설치 확인==
+kubectl get deployment -n kube-system aws-load-balancer-controller

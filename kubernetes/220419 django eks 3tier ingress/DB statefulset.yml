@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: mysql-svc
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: gymin97/django:mysql_v1
+        args:
+        - "--ignore-db-dir=lost+found"
+        ports:
+        - containerPort: 3306
+          name: db
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: rlarudals
+        - name: MYSQL_DATABASE
+          value: django_db
+        - name: MYSQL_USER
+          value: python
+        - name: MYSQL_PASSWORD
+          value: python
+        - name: MYSQL_ROOT_HOST
+          value: '%'
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+        - name: utf8
+          mountPath: /etc/mysql/conf.d/
+      volumes:
+      - name: utf8
+        configMap:
+          name: mysql-conf
+
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
