@@ -15,13 +15,23 @@ spec:
       containers:
       - name: nginx
         image: gymin97/django:nginx_v1
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m" 
         ports:
         - containerPort: 80
         volumeMounts:
-        - mountPath: "/etc/nginx/"
+        - mountPath: /etc/nginx/
           name: nginx-conf
           readOnly: true
+        - mountPath: /var/log/nginx
+          name: log
       volumes:
       - name: nginx-conf
         configMap:
           name: nginx-conf
+      - name: log
+        nfs:
+          path: /log
+          server: 192.168.20.114

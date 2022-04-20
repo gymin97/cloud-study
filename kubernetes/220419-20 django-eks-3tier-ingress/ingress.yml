@@ -6,12 +6,12 @@ metadata:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/scheme: internet-facing
+    ## SSL Settings
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/certificate-arn: 
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
 
 spec:
-  tls:
-    - hosts: 
-      - www.mymincloud.com
-      secretName: tls-crt
   rules:
   - host: www.mymincloud.com
     http:

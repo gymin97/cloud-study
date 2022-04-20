@@ -31,16 +31,10 @@ spec:
         - name: MYSQL_PASSWORD
           value: python
         - name: MYSQL_ROOT_HOST
-          value: '%'
+          value: mysql-svc
         volumeMounts:
         - name: data
           mountPath: /var/lib/mysql
-        - name: utf8
-          mountPath: /etc/mysql/conf.d/
-      volumes:
-      - name: utf8
-        configMap:
-          name: mysql-conf
 
   volumeClaimTemplates:
   - metadata:

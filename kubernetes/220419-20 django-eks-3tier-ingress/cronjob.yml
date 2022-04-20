@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-cron
+spec:
+  schedule: "*/5 * * * *" # 분, 시, 일, 월, 요일
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: centos
+            image: gymin97/django:cronjob_v1
+            imagePullPolicy: Always
+            command: ["/sh/copy.sh"]
+            volumeMounts:
+              - name: log
+                mountPath: /var/log/nginx
+          volumes:
+            - name: log
+              nfs:
+                path: /log
+                server: 192.168.20.114
+          restartPolicy: OnFailure

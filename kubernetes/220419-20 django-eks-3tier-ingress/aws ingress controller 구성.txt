@@ -24,7 +24,7 @@ eksctl create iamserviceaccount --cluster=gymin --namespace=kube-system --name=a
 ==ingress Controller를 설치하기 전에 Cert-manager 설치==
 
 kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.5.4/cert-manager.yaml
-  
+
 curl -o v2_4_0_full.yaml https://github.com/kubernetes-sigs/aws-load-balancer-controller/releases/download/v2.4.0/v2_4_0_full.yaml
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -44,9 +44,11 @@ metadata:
     app.kubernetes.io/name: aws-load-balancer-controller
   name: aws-load-balancer-controller
   namespace: kube-system
----
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 + v2_4_0_full.yaml apply하기
 --> kubectl apply -f .
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ==컨트롤러 설치 확인==
