@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: web-was-np
+  namespace: backend
+spec:
+  podSelector: 
+    matchLabels:
+      app: was
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            tier: frontend # ns의 label 
+
+  egress:
+    - to:
+      - ipBlock:
+          cidr: 0.0.0.0/0

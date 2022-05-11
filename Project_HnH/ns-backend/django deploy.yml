@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: was
+  namespace: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: was
+  template:
+    metadata:
+      labels:
+        app: was
+    spec:
+      containers:
+      - name: was
+        image: 940168446867.dkr.ecr.us-west-1.amazonaws.com/test-gm:django-rds
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m" 
+        ports:
+        - containerPort: 8000
+      initContainers:
+      # - name: init-redis
+      #   image: busybox:1.28
+      #   # nslookup에 svc가 뜨면 실행 - $(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace) = namespace
+      #   command: ['sh', '-c', "until nslookup redis-svc.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for redis-svc; sleep 2; done"]
+      - name: init-mysql-svc
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup db-0.mysql-svc.backend.svc.cluster.local; do echo waiting for mysql-svc; sleep 2; done"]

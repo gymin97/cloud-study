@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: db-was-np
+  namespace: backend
+spec:
+  podSelector:
+    matchLabels: 
+      app: mysql  # 여기로
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+      - podSelector: # 같은 ns안에서 정책
+          matchLabels:
+            app: was # pod의 label
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
