@@ -1,0 +1,28 @@
+#ECR
+aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin 940168446867.dkr.ecr.us-west-1.amazonaws.com
+
+#repository
+aws ecr create-repository --repository-name test-gm --image-scanning-configuration scanOnPush=true --region us-west-1
+
+#tag
+docker tag ecr-django:latest 940168446867.dkr.ecr.us-west-1.amazonaws.com/test-gm:django-v1
+docker tag ecr-mysql:latest 940168446867.dkr.ecr.us-west-1.amazonaws.com/test-gm:mysql-v1
+docker tag ecr-nginx:latest 940168446867.dkr.ecr.us-west-1.amazonaws.com/test-gm:nginx-v1
+
+docker tag gymin97/django:django_login 940168446867.dkr.ecr.us-west-1.amazonaws.com/test-gm:django-login
+
+#push
+docker push 940168446867.dkr.ecr.us-west-1.amazonaws.com/test-gm:django-v1
+docker push 940168446867.dkr.ecr.us-west-1.amazonaws.com/test-gm:mysql-v1
+docker push 940168446867.dkr.ecr.us-west-1.amazonaws.com/test-gm:nginx-v1
+
+docker push 940168446867.dkr.ecr.us-west-1.amazonaws.com/test-gm:django-login
+
+#shell용 파드 생성
+kubectl run -it --rm centosshell --image=centos bash
+kubectl run -it -n frontend --rm centosshell --image=centos bash
+
+#cloudwatch
+kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cloudwatch-namespace.yaml
+
+kubectl create configmap cluster-info --from-literal=cluster.name=CB-TEST-EKS-CLUSTER --from-literal=logs.region=us-west-1 -n amazon-cloudwatch
